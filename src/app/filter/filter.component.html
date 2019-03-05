@@ -1,0 +1,52 @@
+<p></p>
+
+<div class="container">
+  <div class="card">
+    <div class="card card-header bg-success"> Filter vehicles</div>
+    <div class="card card-body">
+      <div class="row">
+        <div class="col-md-9">
+          <img src="assets/logo.png" class="logo">
+        </div>
+      </div>
+    
+      <form #f="ngForm" (ngSubmit)="filterVehicles(f.value.query)">
+      <div >
+        <label class="float-right">Enter your Query in JSON</label>
+        <textarea required type="text" name="query" ngModel class="md-textarea form-control" rows="15"></textarea>
+        <label  *ngIf="vehicles.hits==null" class="float-left" style="color:red;">Error: Check the query again !!</label>
+        <label  *ngIf="vehicles.totalHits==0" class="float-left" style="color:orange;">No Results !!</label>
+      </div>
+      <p></p>
+      <div >
+        <button [disabled]="!f.valid" type="submit" class="btn btn-success" style="float: right;">Execute</button>
+      </div>
+    </form>
+
+  </div>
+
+    <div *ngFor="let vehicle of vehicles?.hits" class="card card-body ">
+      <div class="row">
+        
+        <ul class="list-group col-md-3">
+          <li class="list-group-item">Vehicle ID: </li>
+          <li class="list-group-item">Segement Code:</li>
+          <li class="list-group-item">Energy Type: </li>
+          <li class="list-group-item">Color: </li>
+          <li class="list-group-item">Fiscal Power: </li>
+          <li class="list-group-item">Mixed Consumption: </li>
+        </ul>
+        <ul class="list-group col-md-3">
+          <li class="list-group-item"><span class="badge badge-info">{{vehicle.sourceAsMap.vehicle_id}}</span></li>
+          <li class="list-group-item"><strong>{{vehicle.sourceAsMap.vehicle_segment_code}}</strong></li>
+          <li class="list-group-item"><strong>{{vehicle.sourceAsMap.vehicle_energy_type_code}}</strong></li>
+          <li class="list-group-item"><strong>{{vehicle.sourceAsMap.vehicle_color}}</strong></li>
+          <li class="list-group-item"><strong>{{vehicle.sourceAsMap.vehicle_fiscal_power}}</strong></li>
+          <li class="list-group-item"><strong>{{vehicle.sourceAsMap.vehicle_mixed_consumption}}</strong></li>
+        </ul>
+        <img src="assets/navara1.png" class="logo col-md-3">
+        <img src="assets/navara2.jpg" class="logo col-md-3">
+      </div>
+      
+    </div>
+</div>
