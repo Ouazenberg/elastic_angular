@@ -13,7 +13,7 @@
       <form #f="ngForm" (ngSubmit)="filterVehicles(f.value.query)">
       <div >
         <label class="float-right">Enter your Query in JSON</label>
-        <textarea required type="text" name="query" ngModel class="md-textarea form-control" rows="15"></textarea>
+        <textarea type="text" name="query" placeholder="Json Bool Query Required" ngModel class="md-textarea form-control" rows="15"></textarea>
         <label  *ngIf="vehicles.hits==null" class="float-left" style="color:red;">Error: Check the query again !!</label>
         <label  *ngIf="vehicles.totalHits==0" class="float-left" style="color:orange;">No Results !!</label>
       </div>
@@ -25,9 +25,13 @@
 
   </div>
 
-    <div *ngFor="let vehicle of vehicles?.hits" class="card card-body ">
+    <div *ngFor="let vehicle of vehicles?.hits">
+      <div id="accordion">
+      <div class="card"> 
+      <div class="card-header bg-info clickable"> <a data-toggle="collapse" href="#card{{vehicle.sourceAsMap.vehicle_id}}">  <h4 ><span class="badge badge-light"> Vehicle {{vehicle.sourceAsMap.vehicle_id}} </span><img class="rounded-circle car" src="https://loremflickr.com/320/380/cars?random={{vehicle.id}}"> </h4></a> </div>
+      <div id="card{{vehicle.id}}" class="collapse" data-parent="#accordion">
+      <div class="card-body"> 
       <div class="row">
-        
         <ul class="list-group col-md-3">
           <li class="list-group-item">Vehicle ID: </li>
           <li class="list-group-item">Segement Code:</li>
@@ -44,9 +48,23 @@
           <li class="list-group-item"><strong>{{vehicle.sourceAsMap.vehicle_fiscal_power}}</strong></li>
           <li class="list-group-item"><strong>{{vehicle.sourceAsMap.vehicle_mixed_consumption}}</strong></li>
         </ul>
-        <img src="assets/navara1.png" class="logo col-md-3">
-        <img src="assets/navara2.jpg" class="logo col-md-3">
+        <img src="https://loremflickr.com/320/380/cars?random={{vehicle.sourceAsMap.vehicle_id}}" class="logo col-md-3">
+        <img src="https://loremflickr.com/320/380/cars?random={{vehicle.sourceAsMap.vehicle_id+1}}" class="logo col-md-3">
       </div>
-      
     </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class="container ">
+    <div class="row " ><br>
+      <ul class="nav nav-pills justify-content-center">
+        <li [ngClass]="{'active':currentPage==(i+1)}" class="clickable page-item" *ngFor="let page of pages; let i=index">
+          <a class="page-link" (click)="goToPage(i)">{{i}}</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+  </div>
+   
 </div>

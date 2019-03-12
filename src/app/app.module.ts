@@ -20,7 +20,7 @@ import { FilterComponent } from './filter/filter.component';
     FormsModule,
     HttpClientModule
   ],
-  providers: [VehicleComponent],
+  providers: [VehicleComponent, FilterComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

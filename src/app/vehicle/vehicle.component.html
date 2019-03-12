@@ -9,10 +9,14 @@
         </div>
         
         <div class="col-md-4">
-          <form #f="ngForm" (ngSubmit)="getVehicle()">
+          <form #f="ngForm" (ngSubmit)="getVehicle()"><br>
           <h4>Enter Vehicle ID</h4>
-            <input required name="id" ngModel type="text" [(ngModel)]="vehicleID">
-            <button [disabled]="!f.valid" type="submit" class="btn btn-primary"> Search </button>
+            <div class="input-group mb-3">
+              <input equired name="id" ngModel type="text" class="form-control" placeholder="ex: 3201" [(ngModel)]="vehicleID" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button [disabled]="!f.valid" type="submit" class="btn btn-primary float-right"> Search </button>
+              </div>
+            </div>
           </form>
         </div>
       </div>
@@ -23,13 +27,13 @@
         
         <ul class="list-group col-md-3">
           <li class="list-group-item">Vehicle ID: </li>
-          <li class="list-group-item">Segement Code:</li>
+          <li class="list-group-item">Segment Code:</li>
           <li class="list-group-item">Energy Type: </li>
           <li class="list-group-item">Color: </li>
           <li class="list-group-item">Fiscal Power: </li>
           <li class="list-group-item">Mixed Consumption: </li>
         </ul>
-        <ul class="list-group col-md-2">
+        <ul class="list-group col-md-3">
           <li class="list-group-item"><span class="badge badge-info">{{vehicle.vehicle_id}}</span></li>
           <li class="list-group-item"><strong>{{vehicle.vehicle_segment_code}}</strong></li>
           <li class="list-group-item"><strong>{{vehicle.vehicle_energy_type_code}}</strong></li>
@@ -37,8 +41,8 @@
           <li class="list-group-item"><strong>{{vehicle.vehicle_fiscal_power}}</strong></li>
           <li class="list-group-item"><strong>{{vehicle.vehicle_mixed_consumption}}</strong></li>
         </ul>
-        <img src="assets/navara1.png" class="logo col-md-4">
-        <img src="assets/navara2.jpg" class="logo col-md-3">
+        <img src="https://loremflickr.com/320/380/cars?random={{vehicle.vehicle_id}}" class="logo col-md-3">
+        <img src="https://loremflickr.com/320/380/cars?random={{vehicle.vehicle_id+1}}" class="logo col-md-3">
       </div>
       
     </div>

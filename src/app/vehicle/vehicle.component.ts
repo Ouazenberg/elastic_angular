@@ -19,7 +19,7 @@ export class VehicleComponent implements OnInit {
 
   getVehicle(){
     this.vehicle = null;
-    this.http.get("/api/car4u/vehicles/"+this.vehicleID)
+    this.http.get("http://localhost:8080/car4u/vehicles/"+this.vehicleID)
             .subscribe(data=>{
               this.error=true;
               let resSTR = JSON.stringify(data);
@@ -34,4 +34,6 @@ export class VehicleComponent implements OnInit {
   
 
   } 
+
+  
 }
