@@ -1,0 +1,99 @@
+<p></p>
+
+  <div class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <img src="assets/logo.png" style="width: 100%">
+        </div>
+
+        <ul class="list-unstyled components">
+            <!-- Menu Marques -->
+            <li>
+                <a href="#makeSubmenu" data-toggle="collapse" aria-expanded="false" 
+                                      class="dropdown-toggle">Marque</a>
+                <ul class="collapse list-unstyled bkg" id="makeSubmenu">
+                    <li class="form-check" *ngFor="let make of listMakes; let i = index">
+                        <input class="form-check-input" (change)="filterByMake(make)" type="checkbox" id="makeBox{{i}}">
+                        <label class="form-check-label" for="makeBox{{i}}"> {{make}} </label>
+                    </li>
+                </ul>
+            </li>
+           <!-- Menu Modèles -->
+            <li>
+                <a href="#modelSubmenu" data-toggle="collapse" aria-expanded="false" 
+                                      class="dropdown-toggle">Modèle</a>
+                <ul class="collapse list-unstyled bkg" id="modelSubmenu">
+                    <li *ngIf="selectedMakes.length == 0">
+                        <a >Veuillez d'abord selectionner une marque</a>
+                    </li>
+                    <li class="form-check"  *ngFor="let model of listModels; let i = index">
+                            <input class="form-check-input " (change)="filterByModel(model)" type="checkbox" id="modelBox{{i}}">
+                            <label class="form-check-label " for="modelBox{{i}}"> {{model}} </label>
+                    </li>
+                </ul>
+            </li>
+            <!-- Menu Mensulaités -->
+            <li>
+                <a href="#monthlySubmenu" data-toggle="collapse" aria-expanded="false" 
+                                        class="dropdown-toggle">Mensualité</a>
+                <ul class="collapse list-unstyled bkg" id="monthlySubmenu">
+                    <li class="form-check"  *ngFor="let month of listMonthlyPaiements; let i = index">
+                            <input class="form-check-input " (change)="filterByMonthlyPaiment(month)" type="checkbox" id="monthBox{{i}}">
+                            <label class="form-check-label " for="monthBox{{i}}"> {{month}} </label>
+                    </li>
+                </ul>
+            </li>
+            <!-- Menu Catégories -->
+            <li>
+                    <a href="#categorySubmenu" data-toggle="collapse" aria-expanded="false" 
+                                            class="dropdown-toggle">Catégorie</a>
+                    <ul class="collapse list-unstyled bkg" id="categorySubmenu">
+                        <li class="form-check"  *ngFor="let category of listCategories; let i = index">
+                                <input class="form-check-input " (change)="filterByCategory(category)" type="checkbox" id="categoryBox{{i}}">
+                                <label class="form-check-label " for="categoryBox{{i}}"> {{category}} </label>
+                        </li>
+                    </ul>
+                </li>
+            <!-- Menu Couleurs -->
+            <!-- <li >
+                <a href="#colorSubmenu" data-toggle="collapse" aria-expanded="false" 
+                                      class="dropdown-toggle">Couleur</a>
+                <ul class="collapse list-unstyled" id="colorSubmenu">
+                    <li *ngFor="let color of listVehicles?.aggs.colors.buckets">
+                        <a>{{color.key}}</a>
+                    </li>
+                </ul>
+            </li> -->
+            
+        </ul>
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content">
+        <h5> <b>Résultats : {{nbrResults}}</b>  </h5>
+        <div class="row">
+            <div *ngFor="let vehicle of listVehicles?.hits" class="col-md-2 sp">
+              <div class="card cadre">
+                <div class="card-body">
+                <div style="text-align: center">
+                    <h5>{{vehicle.sourceAsMap.make_name}} </h5>
+                    <h4>{{vehicle.sourceAsMap.model_name}} {{vehicle.sourceAsMap.vehicle_energy_type_code}}  </h4>
+                </div>
+             </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+</script>
+  

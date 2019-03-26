@@ -1,7 +1,7 @@
 <p></p>
 <div class="container">
   <div class="card card-primary">
-    <div class="card-header bg-primary">Show Vehicle</div>
+    <div class="card-header bg-primary"><strong>Find Vehicle</strong></div>
     <div class="card card-body ">
       <div class="row">
         <div class="col-md-8">
@@ -31,18 +31,16 @@
           <li class="list-group-item">Energy Type: </li>
           <li class="list-group-item">Color: </li>
           <li class="list-group-item">Fiscal Power: </li>
-          <li class="list-group-item">Mixed Consumption: </li>
         </ul>
         <ul class="list-group col-md-3">
           <li class="list-group-item"><span class="badge badge-info">{{vehicle.vehicle_id}}</span></li>
           <li class="list-group-item"><strong>{{vehicle.vehicle_segment_code}}</strong></li>
           <li class="list-group-item"><strong>{{vehicle.vehicle_energy_type_code}}</strong></li>
           <li class="list-group-item"><strong>{{vehicle.vehicle_color}}</strong></li>
-          <li class="list-group-item"><strong>{{vehicle.vehicle_fiscal_power}}</strong></li>
-          <li class="list-group-item"><strong>{{vehicle.vehicle_mixed_consumption}}</strong></li>
+          <li class="list-group-item"><strong>{{vehicle.vehicle_fiscal_power}}</strong></li>          
         </ul>
-        <img src="https://loremflickr.com/320/380/cars?random={{vehicle.vehicle_id}}" class="logo col-md-3">
-        <img src="https://loremflickr.com/320/380/cars?random={{vehicle.vehicle_id+1}}" class="logo col-md-3">
+        <img src="https://loremflickr.com/320/320/cars?random={{vehicle.vehicle_id}}" class="logo col-md-3">
+        <img src="https://loremflickr.com/320/320/cars?random={{vehicle.vehicle_id+1}}" class="logo col-md-3">
       </div>
       
     </div>

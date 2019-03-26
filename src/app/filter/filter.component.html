@@ -2,7 +2,7 @@
 
 <div class="container">
   <div class="card">
-    <div class="card card-header bg-success"> Filter vehicles</div>
+    <div class="card card-header bg-secondary"> <strong>Filter vehicles</strong> </div>
     <div class="card card-body">
       <div class="row">
         <div class="col-md-9">
@@ -19,7 +19,7 @@
       </div>
       <p></p>
       <div >
-        <button [disabled]="!f.valid" type="submit" class="btn btn-success" style="float: right;">Execute</button>
+        <button [disabled]="!f.valid" type="submit" class="btn btn-secondary" style="float: right;">Execute</button>
       </div>
     </form>
 
@@ -38,7 +38,6 @@
           <li class="list-group-item">Energy Type: </li>
           <li class="list-group-item">Color: </li>
           <li class="list-group-item">Fiscal Power: </li>
-          <li class="list-group-item">Mixed Consumption: </li>
         </ul>
         <ul class="list-group col-md-3">
           <li class="list-group-item"><span class="badge badge-info">{{vehicle.sourceAsMap.vehicle_id}}</span></li>
@@ -46,10 +45,9 @@
           <li class="list-group-item"><strong>{{vehicle.sourceAsMap.vehicle_energy_type_code}}</strong></li>
           <li class="list-group-item"><strong>{{vehicle.sourceAsMap.vehicle_color}}</strong></li>
           <li class="list-group-item"><strong>{{vehicle.sourceAsMap.vehicle_fiscal_power}}</strong></li>
-          <li class="list-group-item"><strong>{{vehicle.sourceAsMap.vehicle_mixed_consumption}}</strong></li>
         </ul>
-        <img src="https://loremflickr.com/320/380/cars?random={{vehicle.sourceAsMap.vehicle_id}}" class="logo col-md-3">
-        <img src="https://loremflickr.com/320/380/cars?random={{vehicle.sourceAsMap.vehicle_id+1}}" class="logo col-md-3">
+        <img src="https://loremflickr.com/320/320/cars?random={{vehicle.sourceAsMap.vehicle_id}}" class="logo col-md-3">
+        <img src="https://loremflickr.com/320/320/cars?random={{vehicle.sourceAsMap.vehicle_id+1}}" class="logo col-md-3">
       </div>
     </div>
     </div>

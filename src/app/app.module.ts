@@ -7,12 +7,14 @@ import { AppComponent } from './app.component';
 import { VehicleComponent } from './vehicle/vehicle.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FilterComponent } from './filter/filter.component';
+import { FilterUserComponent } from './filter-user/filter-user.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     VehicleComponent,
-    FilterComponent
+    FilterComponent,
+    FilterUserComponent
   ],
   imports: [
     BrowserModule,

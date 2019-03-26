@@ -1,9 +1,19 @@
 <p></p>
-<div class="container">
-  <button routerLink="/vehicle" class="btn btn-primary col-md-2">Vehicle</button>
-  <button routerLink="/filter" class="btn btn-success col-md-2">Query</button>
-</div>
+
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" routerLink="/filter" role="tab">Filter</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link " data-toggle="tab" routerLink="/vehicle" role="tab">Vehicle</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" routerLink="/query" role="tab">Query</a>
+    </li>
+  </ul>
 
 <div>
   <router-outlet></router-outlet>
 </div>
+
+
