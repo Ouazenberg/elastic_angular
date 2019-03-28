@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FilterUserService } from './filter-user.service';
-import { TestUserService } from './test-user.service';
 
 @Component({
   selector: 'app-filter-user',
@@ -24,267 +23,110 @@ export class FilterUserComponent implements OnInit {
   searchMonthlyPaiements = "";
   
   listMakes: any;
-  listModels: any;
+  listModels = [];
   listCategories: any;
   listMonthlyPaiements: any;
-  
 
-  constructor(private filterUserService: FilterUserService,
-              private testUserService: TestUserService
-              ) { }
+  currentPage:number = 1;
+  size:number = 24;
+  pages:Array<number>;
+  totalPages:number;
+ 
+  constructor(private filterUserService: FilterUserService) { }
 
   ngOnInit() {
-    this.getAllVehicles();
+    this.getVehicles();
   }
 
   filterByMake(make){
-   
-    let query = this.filterUserService.dynamicQuery(make,"","");
+    
+    let query = this.filterUserService.dynamicQuery(make,"","","");
     this.filterUserService.httpVehicles(query)
          .subscribe(data=>{
-          let resSTR = JSON.stringify(data);
-          let resJSON = JSON.parse(resSTR);
+          let resJSON = JSON.parse(JSON.stringify(data));
           let listModels = this.filterUserService.getAggs(resJSON.aggs.models.buckets);
-          let listMonthlyPaiements = this.filterUserService.getAggs(resJSON.aggs.monthly.buckets);
-          
+           
           if(this.selectedMakes.includes(make)){
               this.selectedMakes.splice(this.selectedMakes.indexOf(make),1);
               this.cleanModels(listModels);
-              this.cleanMonthlyPaiements(listMonthlyPaiements);
           } 
           else {
               this.selectedMakes.push(make);
               this.updateModels(listModels);
           }          
-          this.stringSearchMakes();
+          this.search();
         }); 
-}
-
-
-
-filterByModel(model){
-  if(this.selectedModels.includes(model)){
-    this.selectedModels.splice(this.selectedModels.indexOf(model),1);
-  } else {
-    this.selectedModels.push(model);
   }
-  this.stringSearchModels();
-}
 
-filterByMonthlyPaiment(monthlyPaiement){
-if(this.selectedMonthlyPaiements.includes(monthlyPaiement)){
-  this.selectedMonthlyPaiements.splice(this.selectedMonthlyPaiements.indexOf(monthlyPaiement),1);
-} else {
-  this.selectedMonthlyPaiements.push(monthlyPaiement);
-}
-
-this.stringSearchMonthlyPaiement();
-
-}
-
-  getAllVehicles(){    
-    this.query =  this.filterUserService.dynamicQuery(this.searchMake, this.searchModel, this.searchMonthlyPaiements); 
+  filterByModel(model){
     
-    this.testUserService.getAllVehicles(this.query).then(
-                                                    data=>{
-                                                      this.setResults(this.testUserService.getResults());
-                                                    });
-    
-    // this.filterUserService.httpVehicles(this.query)
-    //          .subscribe(data=>{
-    //           let resSTR = JSON.stringify(data);
-    //           let resJSON = JSON.parse(resSTR);
-    //           this.listVehicles = resJSON;
-    //           this.nbrResults = resJSON.totalHits;
-    //           this.listMakes = this.filterUserService.getAggs(resJSON.aggs.makes.buckets);
-    //           this.listMonthlyPaiements = this.filterUserService.getAggs(resJSON.aggs.monthly.buckets);
-    //           this.listCategories = this.filterUserService.getAggs(resJSON.aggs.categories.buckets)
-
-    //           this.listModels = [];
-    //           this.selectedModels = [];
-    //           this.searchModel = "";
-    //           console.log(this.listVehicles);
-
-    //           console.log("Makes: "+this.searchMake);
-    //           console.log("Models: "+this.searchModel);
-    //           console.log("Months: "+this.searchMonthlyPaiements);
-
-              
-    //         });
-   }
-
-  getVehiclesByMake(){
-    this.query =  this.filterUserService.dynamicQuery(this.searchMake, this.searchModel, this.searchMonthlyPaiements); 
-    this.filterUserService.httpVehicles(this.query)
-             .subscribe(data=>{
-              let resSTR = JSON.stringify(data);
-              let resJSON = JSON.parse(resSTR);
-              this.listVehicles = resJSON;
-              this.nbrResults = resJSON.totalHits;
-              this.listModels = this.filterUserService.getAggs(resJSON.aggs.models.buckets);
-              this.listCategories = this.filterUserService.getAggs(resJSON.aggs.categories.buckets)
-              this.listMonthlyPaiements = this.filterUserService.getAggs(resJSON.aggs.monthly.buckets);
-              console.log(this.listVehicles); 
-
-              console.log("Makes: "+this.searchMake);
-              console.log("Models: "+this.searchModel);
-              console.log("Months: "+this.searchMonthlyPaiements);
-            });
-  }
-  
-  getVehiclesByModel(){
-    this.query =  this.filterUserService.dynamicQuery(this.searchMake, this.searchModel, this.searchMonthlyPaiements);
-    this.filterUserService.httpVehicles(this.query)
-             .subscribe(data=>{
-              let resSTR = JSON.stringify(data);
-              let resJSON = JSON.parse(resSTR);
-              this.listVehicles = resJSON;
-              this.nbrResults = resJSON.totalHits;
-              this.listMonthlyPaiements = this.filterUserService.getAggs(resJSON.aggs.monthly.buckets);
-              this.listCategories = this.filterUserService.getAggs(resJSON.aggs.categories.buckets)
-              console.log(this.listVehicles);
-
-              console.log("Makes: "+this.searchMake);
-              console.log("Models: "+this.searchModel);
-              console.log("Months: "+this.searchMonthlyPaiements);
-            });
-  }
-
-  getVehiclesByMonthlyPaiements(){
-    this.query =  this.filterUserService.dynamicQuery(this.searchMake, this.searchModel, this.searchMonthlyPaiements);  
-    this.filterUserService.httpVehicles(this.query)
-             .subscribe(data=>{
-              let resSTR = JSON.stringify(data);
-              let resJSON = JSON.parse(resSTR);
-              this.listVehicles = resJSON;
-              this.listMakes = this.filterUserService.getAggs(resJSON.aggs.makes.buckets);
-              this.nbrResults = resJSON.totalHits;
-              console.log(this.listVehicles);
-
-              console.log("Makes: "+this.searchMake);
-              console.log("Models: "+this.searchModel);
-              console.log("Months: "+this.searchMonthlyPaiements);
-            });
-  }
-
-  getVehiclesByMonthly_Make(){
-    this.query =  this.filterUserService.dynamicQuery(this.searchMake, this.searchModel, this.searchMonthlyPaiements);
-    this.filterUserService.httpVehicles(this.query)
-             .subscribe(data=>{
-              let resSTR = JSON.stringify(data);
-              let resJSON = JSON.parse(resSTR);
-              this.listVehicles = resJSON;
-              this.listModels = this.filterUserService.getAggs(resJSON.aggs.models.buckets);
-              this.nbrResults = resJSON.totalHits;
-              console.log(this.listVehicles);
-
-              console.log("Makes: "+this.searchMake);
-              console.log("Models: "+this.searchModel);
-              console.log("Months: "+this.searchMonthlyPaiements);
-            });
-  }
-
-  getVehiclesByMonthly_Make_Model(){
-    this.query =  this.filterUserService.dynamicQuery(this.searchMake, this.searchModel, this.searchMonthlyPaiements);
-    this.filterUserService.httpVehicles(this.query)
-             .subscribe(data=>{
-              let resSTR = JSON.stringify(data);
-              let resJSON = JSON.parse(resSTR);
-              this.listVehicles = resJSON;
-              this.nbrResults = resJSON.totalHits;
-              console.log(this.listVehicles);
-
-              console.log("Makes: "+this.searchMake);
-              console.log("Models: "+this.searchModel);
-              console.log("Months: "+this.searchMonthlyPaiements);
-            });
-  }
-
-  stringSearchMakes (){
-    this.searchMake = "";
-    if(this.selectedMakes.length == 0){
-      if(this.selectedMonthlyPaiements.length == 0){
-        this.searchMonthlyPaiements = "";
-        this.getAllVehicles();
-      }else{
-        this.getVehiclesByMonthlyPaiements();
+      if(this.selectedModels.includes(model)){
+        this.selectedModels.splice(this.selectedModels.indexOf(model),1);
+      } else {
+        this.selectedModels.push(model);
       }
-    }else { 
+      this.search();
+  }
+
+  filterByMonthlyPaiment(monthlyPaiement){
+      if(this.selectedMonthlyPaiements.includes(monthlyPaiement)){
+        this.selectedMonthlyPaiements.splice(this.selectedMonthlyPaiements.indexOf(monthlyPaiement),1);
+      } else {
+        this.selectedMonthlyPaiements.push(monthlyPaiement);
+      }
+      this.search();
+  }
+
+  filterByCategory(category){
+    if(this.selectedCategories.includes(category)){
+      this.selectedCategories.splice(this.selectedCategories.indexOf(category),1);
+    } else {
+      this.selectedCategories.push(category);
+    }
+    this.search();
+}
+
+  search(){
+    this.currentPage = 1;
+    this.searchMake = "";
+    this.searchModel = "";
+    this.searchCategory = "";
+    this.searchMonthlyPaiements = "";
+
       for(let m of this.selectedMakes){
         this.searchMake += " " + m; 
       }
-      if(this.selectedModels.length > 0){
-        if(this.selectedMonthlyPaiements.length == 0){
-          this.searchMonthlyPaiements = "";
-          this.getVehiclesByModel();
-        }else{
-          this.getVehiclesByMonthly_Make_Model();
-        }
-      } else {
-        this.searchModel = "";
-        if(this.selectedMonthlyPaiements.length == 0){
-          this.searchMonthlyPaiements = "";
-           this.getVehiclesByMake();
-        }else{
-          this.getVehiclesByMonthly_Make();
-        }
-
+      for(let m of this.selectedModels){
+        this.searchModel += " " + m; 
       }
-    }
-  }
-
-  stringSearchModels(){
-    this.searchModel = "";
-      if(this.selectedModels.length == 0){
-        if(this.selectedMonthlyPaiements.length == 0){
-          this.searchMonthlyPaiements = "";
-          this.getVehiclesByMake();
-        }else{
-          this.getVehiclesByMonthly_Make();
-        }
-      }else{
-        for(let m of this.selectedModels){
-          this.searchModel += " " + m; 
-        }
-        if(this.selectedMonthlyPaiements.length == 0){
-          this.searchMonthlyPaiements = "";
-          this.getVehiclesByModel();
-        }else{
-          this.getVehiclesByMonthly_Make_Model();
-        }
+      for(let m of this.selectedCategories){
+        this.searchCategory += " " + m; 
       }
-  }
-
-  stringSearchMonthlyPaiement(){
-    this.searchMonthlyPaiements = "";
-    if(this.selectedMonthlyPaiements.length == 0){
-      if(this.selectedMakes.length == 0){
-        this.searchMake = "";
-        this.getAllVehicles();
-      }else{
-        if(this.selectedModels.length == 0){
-          this.searchModel = "";
-          this.getVehiclesByMake();
-        }else{
-          this.getVehiclesByModel();
-        }
-      }
-    } else {
       for(let m of this.selectedMonthlyPaiements){
         this.searchMonthlyPaiements += " " + m; 
       }
-      if(this.selectedMakes.length == 0){
-        this.searchMake = "";
-        this.getVehiclesByMonthlyPaiements();
-      }else{
-        if(this.selectedModels.length == 0){
-          this.searchModel = "";
-          this.getVehiclesByMonthly_Make();
-        }else{
-          this.getVehiclesByMonthly_Make_Model();
-        }
-      }
-    }
+    this.getVehicles();
+  }
+
+  getVehicles(){    
+    this.setQuery();
+    this.filterUserService.getVehicles(this.query)
+                        .then(
+                          data=>{
+                            this.setResults(this.filterUserService.getResults());
+                            this.cleanMonthlyPaiements(this.listMonthlyPaiements);
+                            console.log(this.listVehicles);
+
+                            console.log("searchMake: "+this.searchMake);
+                            console.log("searchModel: "+this.searchModel);
+                            console.log("searchCategory: "+this.searchCategory);
+                            console.log("searchMonthlyPaiements: "+this.searchMonthlyPaiements);
+                          });
+  }
+
+  setQuery(){
+    this.filterUserService.setArgs(this.getArgs());
+    this.query =  this.filterUserService.dynamicQuery(this.searchMake, this.searchModel, this.searchMonthlyPaiements, this.searchCategory);     
   }
 
   cleanModels(listModels){
@@ -308,7 +150,7 @@ this.stringSearchMonthlyPaiement();
 
   cleanMonthlyPaiements(listMonthlyPaiements){
     for(let m of this.selectedMonthlyPaiements){
-      if(listMonthlyPaiements.includes(m)){
+      if(!listMonthlyPaiements.includes(m)){
         this.selectedMonthlyPaiements.splice(this.selectedMonthlyPaiements.indexOf(m),1);
       }
     }
@@ -325,16 +167,56 @@ this.stringSearchMonthlyPaiement();
 
     this.selectedMakes = obj.selectedMakes,
     this.selectedModels = obj.selectedModels,
+    this.selectedCategories = obj.selectedCategories,
     this.selectedMonthlyPaiements = obj.selectedMonthlyPaiements,
     
     this.searchMake = obj.searchMake,
     this.searchModel = obj.searchModel,
+    this.searchCategory = obj.searchCategory,
     this.searchMonthlyPaiements = obj.searchMonthlyPaiements,
     
     this.listMakes = obj.listMakes,
     this.listModels = obj.listModels,
     this.listCategories = obj.listCategories,
-    this.listMonthlyPaiements = obj.listMonthlyPaiements
+    this.listMonthlyPaiements = obj.listMonthlyPaiements,
+
+    this.currentPage = obj.currentPage,
+    this.size = obj.size,
+    this.pages = obj.pages,
+    this.totalPages = obj.totalPages
+  }
+
+  getArgs(){
+    let obj = {
+      nbrResults: this.nbrResults,
+      listVehicles: this.listVehicles,
+
+      selectedMakes: this.selectedMakes,
+      selectedModels: this.selectedModels,
+      selectedCategories: this.selectedCategories,
+      selectedMonthlyPaiements: this.selectedMonthlyPaiements,
+      
+      searchMake: this.searchMake,
+      searchModel: this.searchModel,
+      searchCategory: this.searchCategory,
+      searchMonthlyPaiements: this.searchMonthlyPaiements,
+      
+      listMakes: this.listMakes,
+      listModels: this.listModels,
+      listCategories: this.listCategories,
+      listMonthlyPaiements: this.listMonthlyPaiements,
+
+      currentPage : this.currentPage,
+      size : this.size,
+      pages : this.pages,
+      totalPages : this.totalPages
+    }
+    return obj;
+  }
+
+  goToPage(i:number){
+    this.currentPage = i+1;
+    this.getVehicles();
   }
 
 }

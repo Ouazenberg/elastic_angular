@@ -4,15 +4,15 @@
     <!-- Sidebar  -->
     <nav id="sidebar">
         <div class="sidebar-header">
-            <img src="assets/logo.png" style="width: 100%">
+            <img src="assets/logo.png" class="logo" style="width: 100%" >
         </div>
 
-        <ul class="list-unstyled components">
+        <ul class="components">
             <!-- Menu Marques -->
             <li>
                 <a href="#makeSubmenu" data-toggle="collapse" aria-expanded="false" 
                                       class="dropdown-toggle">Marque</a>
-                <ul class="collapse list-unstyled bkg" id="makeSubmenu">
+                <ul class="collapse bkg" id="makeSubmenu">
                     <li class="form-check" *ngFor="let make of listMakes; let i = index">
                         <input class="form-check-input" (change)="filterByMake(make)" type="checkbox" id="makeBox{{i}}">
                         <label class="form-check-label" for="makeBox{{i}}"> {{make}} </label>
@@ -23,9 +23,9 @@
             <li>
                 <a href="#modelSubmenu" data-toggle="collapse" aria-expanded="false" 
                                       class="dropdown-toggle">Modèle</a>
-                <ul class="collapse list-unstyled bkg" id="modelSubmenu">
-                    <li *ngIf="selectedMakes.length == 0">
-                        <a >Veuillez d'abord selectionner une marque</a>
+                <ul class="collapse bkg" id="modelSubmenu">
+                    <li  class="form-check" *ngIf="selectedMakes.length == 0">
+                        Veuillez d'abord selectionner une marque
                     </li>
                     <li class="form-check"  *ngFor="let model of listModels; let i = index">
                             <input class="form-check-input " (change)="filterByModel(model)" type="checkbox" id="modelBox{{i}}">
@@ -37,7 +37,7 @@
             <li>
                 <a href="#monthlySubmenu" data-toggle="collapse" aria-expanded="false" 
                                         class="dropdown-toggle">Mensualité</a>
-                <ul class="collapse list-unstyled bkg" id="monthlySubmenu">
+                <ul class="collapse bkg" id="monthlySubmenu">
                     <li class="form-check"  *ngFor="let month of listMonthlyPaiements; let i = index">
                             <input class="form-check-input " (change)="filterByMonthlyPaiment(month)" type="checkbox" id="monthBox{{i}}">
                             <label class="form-check-label " for="monthBox{{i}}"> {{month}} </label>
@@ -48,7 +48,7 @@
             <li>
                     <a href="#categorySubmenu" data-toggle="collapse" aria-expanded="false" 
                                             class="dropdown-toggle">Catégorie</a>
-                    <ul class="collapse list-unstyled bkg" id="categorySubmenu">
+                    <ul class="collapse bkg" id="categorySubmenu">
                         <li class="form-check"  *ngFor="let category of listCategories; let i = index">
                                 <input class="form-check-input " (change)="filterByCategory(category)" type="checkbox" id="categoryBox{{i}}">
                                 <label class="form-check-label " for="categoryBox{{i}}"> {{category}} </label>
@@ -71,19 +71,37 @@
 
     <!-- Page Content  -->
     <div id="content">
-        <h5> <b>Résultats : {{nbrResults}}</b>  </h5>
-        <div class="row">
-            <div *ngFor="let vehicle of listVehicles?.hits" class="col-md-2 sp">
-              <div class="card cadre">
-                <div class="card-body">
-                <div style="text-align: center">
-                    <h5>{{vehicle.sourceAsMap.make_name}} </h5>
-                    <h4>{{vehicle.sourceAsMap.model_name}} {{vehicle.sourceAsMap.vehicle_energy_type_code}}  </h4>
+        <h2> <b>Résultats : {{nbrResults}}</b> </h2>
+        <div style="height: 90%">
+            <div class="row">
+                <div *ngFor="let vehicle of listVehicles?.hits" class="col-md-2 sp">
+                <div class="card cadre">
+                    <div class="card-body">
+                    <div style="text-align: center">
+                        <h5>{{vehicle.sourceAsMap.make_name}} </h5>
+                        <h4>{{vehicle.sourceAsMap.model_name}} {{vehicle.sourceAsMap.vehicle_energy_type_code}}  </h4>
+                    </div>
                 </div>
-             </div>
-              </div>
+                </div>
+                </div>
             </div>
         </div>
+            <p></p>
+            
+            <div class="container ">
+                <div class="row justify-content-center" ><br>
+                <ul class="nav nav-pills justify-content-center">
+                    <li *ngIf="currentPage > 6" class="clickable page-link" (click)="goToPage(0)"> 1 </li>
+                    <li *ngIf="currentPage > 6" class="clickable page-link"> ........ </li>
+                    <li [ngClass]="{'active':currentPage==(i+1)}" class="clickable page-item" *ngFor="let page of pages; let i=index">
+                        <a *ngIf="i > (currentPage-6) && i < (currentPage+4) " class="page-link" (click)="goToPage(i)">{{i+1}}</a>
+                    </li>
+                    <li *ngIf="currentPage < totalPages - 5" class="clickable page-link"> ........ </li>
+                    <li *ngIf="currentPage < totalPages - 5"class="clickable page-link" (click)="goToPage(totalPages-1)">{{totalPages}} </li>
+                </ul>
+                </div>
+            </div>
+        
     </div>
 
 
