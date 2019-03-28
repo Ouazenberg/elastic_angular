@@ -12,23 +12,28 @@ export class FilterUserService {
   selectedMakes = [];
   selectedModels = [];
   selectedCategories = [];
+  selectedEnergies = [];
+  selectedTransmissions = [];
   selectedMonthlyPaiements = [];
   
   searchMake = "";
   searchModel = "";
   searchCategory = "";
+  searchEnergy = "";
+  searchTransimission = "";
   searchMonthlyPaiements = "";
   
   listMakes: any;
-  listModels: any;
+  listModels = [];
   listCategories: any;
+  listEnergies: any;
+  listTransmissions: any;
   listMonthlyPaiements: any;
 
   currentPage:number;
   size:number;
   pages:Array<number>;
   totalPages:number;
-
   constructor(private http: HttpClient) {  }
 
   httpVehicles(query){
@@ -43,19 +48,7 @@ export class FilterUserService {
     return allAggs;
   }
 
-  getVehicles(query){    
-    return this.httpVehicles(query)
-              .forEach(data=>{
-              let resJSON = JSON.parse(JSON.stringify(data));
-              this.listVehicles = resJSON;
-              this.nbrResults = resJSON.totalHits;
-              this.updateTest();
-              this.totalPages = Math.ceil(resJSON.totalHits/this.size);
-              this.pages = new Array(this.totalPages);
-            });
-    }
-
-  dynamicQuery(searchMake, searchModel, searchMonthly, searchCategory){
+  dynamicQuery(searchMake, searchModel, searchMonthly, searchCategory, searchEnergy, searchTransimission){
     let match: string = "";
 
     if(searchMake != ""){
@@ -75,7 +68,6 @@ export class FilterUserService {
                 "          }\n" + 
                 "        }\n";
     }
-
     if(searchMonthly != ""){
       if (match !=""){
         match += ",";
@@ -86,7 +78,6 @@ export class FilterUserService {
                 "          }\n" + 
                 "        }\n";
     }
-
     if(searchCategory != ""){
       if (match !=""){
         match += ",";
@@ -97,13 +88,27 @@ export class FilterUserService {
                 "          }\n" + 
                 "        }\n";
     }
-
-    let aggs =  "    \"colors\": {\n" + 
-                "      \"terms\": {\n" + 
-                "        \"field\": \"vehicle_color.keyword\",\"size\": 50,\"order\": {\"_term\": \"asc\"}\n" + 
-                "      }\n" + 
-                "     },\n" +  
-                "    \"makes\": {\n" + 
+    if(searchEnergy != ""){
+      if (match !=""){
+        match += ",";
+      }
+      match +=  "        {\n" + 
+                "          \"match\": {\n" + 
+                "            \"vehicle_energy_type_code\": \""+searchEnergy+"\"\n" + 
+                "          }\n" + 
+                "        }\n";
+    }
+    if(searchTransimission != ""){
+      if (match !=""){
+        match += ",";
+      }
+      match +=  "        {\n" + 
+                "          \"match\": {\n" + 
+                "            \"vehicle_transmission_type_code\": \""+searchTransimission+"\"\n" + 
+                "          }\n" + 
+                "        }\n";
+    }
+    let aggs =  "    \"makes\": {\n" + 
                 "      \"terms\": {\n" + 
                 "        \"field\": \"make_unique_label.keyword\",\"size\": 50,\"order\": {\"_term\": \"asc\"}\n" + 
                 "      }\n" +   
@@ -116,6 +121,16 @@ export class FilterUserService {
                 "    \"categories\": {\n" + 
                 "      \"terms\": {\n" + 
                 "        \"field\": \"vehicle_segment_code.keyword\",\"size\": 50,\"order\": {\"_term\": \"asc\"}\n" + 
+                "      }\n" + 
+                "    },\n" +
+                "    \"energies\": {\n" + 
+                "      \"terms\": {\n" + 
+                "        \"field\": \"vehicle_energy_type_code.keyword\",\"size\": 50,\"order\": {\"_term\": \"asc\"}\n" + 
+                "      }\n" + 
+                "    },\n" +
+                "    \"transmissions\": {\n" + 
+                "      \"terms\": {\n" + 
+                "        \"field\": \"vehicle_transmission_type_code.keyword\",\"size\": 50,\"order\": {\"_term\": \"asc\"}\n" + 
                 "      }\n" + 
                 "    },\n" +
                 "    \"monthly\": {\n" + 
@@ -139,8 +154,20 @@ export class FilterUserService {
     return query;
   }
 
-  updateTest(){
-    
+
+  getVehicles(query){    
+    return this.httpVehicles(query)
+              .forEach(data=>{
+              let resJSON = JSON.parse(JSON.stringify(data));
+              this.listVehicles = resJSON;
+              this.nbrResults = resJSON.totalHits;
+              this.updateFilterResults();
+              this.totalPages = Math.ceil(resJSON.totalHits/this.size);
+              this.pages = new Array(this.totalPages);
+            });
+    }
+
+  updateFilterResults(){
     if(this.selectedMakes.length == 0){
       this.listMakes = this.getAggs(this.listVehicles.aggs.makes.buckets);
     }else{
@@ -151,86 +178,16 @@ export class FilterUserService {
     if(this.selectedCategories.length == 0){
       this.listCategories = this.getAggs(this.listVehicles.aggs.categories.buckets) 
     }
+    if(this.selectedEnergies.length == 0){
+      this.listEnergies = this.getAggs(this.listVehicles.aggs.energies.buckets) 
+    }
+    if(this.selectedTransmissions.length == 0){
+      this.listTransmissions = this.getAggs(this.listVehicles.aggs.transmissions.buckets);
+    }
     if(this.selectedMonthlyPaiements.length == 0){
       this.listMonthlyPaiements = this.getAggs(this.listVehicles.aggs.monthly.buckets);
     }
   }
-
-  // updateFilterResults(){
-  //   if(this.selectedCategories.length == 0){
-  //       if(this.selectedMakes.length == 0 && 
-  //           this.selectedMonthlyPaiements.length == 0){
-  //         //getAllVehicles
-  //               this.listMakes = this.getAggs(this.listVehicles.aggs.makes.buckets);
-  //               this.listMonthlyPaiements = this.getAggs(this.listVehicles.aggs.monthly.buckets);
-  //               this.listCategories = this.getAggs(this.listVehicles.aggs.categories.buckets) 
-  //       } else 
-  //       if( this.selectedMakes.length > 0 && 
-  //             this.selectedModels.length == 0 && 
-  //               this.selectedMonthlyPaiements.length == 0)  {
-  //         //getVehiclesByMake
-  //               this.listModels = this.getAggs(this.listVehicles.aggs.models.buckets);
-  //               this.listCategories = this.getAggs(this.listVehicles.aggs.categories.buckets)
-  //               this.listMonthlyPaiements = this.getAggs(this.listVehicles.aggs.monthly.buckets);
-  //       } else 
-  //       if( this.selectedModels.length > 0 && 
-  //             this.selectedMonthlyPaiements.length == 0  )  {
-  //         //getVehiclesByMake_Model
-  //               this.listMonthlyPaiements = this.getAggs(this.listVehicles.aggs.monthly.buckets);
-  //               this.listCategories = this.getAggs(this.listVehicles.aggs.categories.buckets);
-  //       } else 
-  //       if(this.selectedMonthlyPaiements.length >0 && 
-  //           this.selectedMakes.length == 0)  {
-  //         //getVehiclesByMonthlyPaiements
-  //               this.listMakes = this.getAggs(this.listVehicles.aggs.makes.buckets);
-  //               this.listCategories = this.getAggs(this.listVehicles.aggs.categories.buckets);
-  //       } else 
-  //       if(this.selectedMakes.length > 0 && 
-  //           this.selectedMonthlyPaiements.length > 0 && 
-  //             this.selectedModels.length == 0)  {
-  //         //getVehiclesByMake_MonthlyPaiements 
-  //               this.listModels = this.getAggs(this.listVehicles.aggs.models.buckets); 
-  //               this.listCategories = this.getAggs(this.listVehicles.aggs.categories.buckets);          
-  //       } else 
-  //       if(this.selectedMakes.length > 0 && 
-  //           this.selectedMonthlyPaiements.length > 0 && 
-  //             this.selectedModels.length > 0)  {
-  //         //getVehiclesByMake_Model_MonthlyPaiements 
-  //               this.listCategories = this.getAggs(this.listVehicles.aggs.categories.buckets);          
-  //       }
-  //   } else {
-  //       if(this.selectedMakes.length == 0 && 
-  //         this.selectedMonthlyPaiements.length == 0){
-  //       //getVehiclesByCategory
-  //             this.listMakes = this.getAggs(this.listVehicles.aggs.makes.buckets);
-  //             this.listMonthlyPaiements = this.getAggs(this.listVehicles.aggs.monthly.buckets);
-  //       } else 
-  //       if( this.selectedMakes.length > 0 && 
-  //             this.selectedModels.length == 0 && 
-  //               this.selectedMonthlyPaiements.length == 0)  {
-  //         //getVehiclesByMake_Category
-  //               this.listModels = this.getAggs(this.listVehicles.aggs.models.buckets);
-  //               this.listMonthlyPaiements = this.getAggs(this.listVehicles.aggs.monthly.buckets);
-  //       } else 
-  //       if( this.selectedModels.length > 0 && 
-  //             this.selectedMonthlyPaiements.length == 0  )  {
-  //         //getVehiclesByMake_Model_Category
-  //               this.listMonthlyPaiements = this.getAggs(this.listVehicles.aggs.monthly.buckets);
-  //       } else 
-  //       if(this.selectedMonthlyPaiements.length >0 && 
-  //           this.selectedMakes.length == 0)  {
-  //         //getVehiclesByMonthlyPaiements_Category
-  //               this.listMakes = this.getAggs(this.listVehicles.aggs.makes.buckets);
-  //       } else 
-  //       if(this.selectedMakes.length > 0 && 
-  //           this.selectedMonthlyPaiements.length > 0 && 
-  //             this.selectedModels.length == 0)  {
-  //         //getVehiclesByMake_MonthlyPaiements_Category
-  //               this.listModels = this.getAggs(this.listVehicles.aggs.models.buckets); 
-  //               //this.listCategories = this.getAggs(this.listVehicles.aggs.categories.buckets);          
-  //       }
-  //   }
-  // }
 
   getResults(){
     let obj = {
@@ -240,16 +197,22 @@ export class FilterUserService {
       selectedMakes: this.selectedMakes,
       selectedModels: this.selectedModels,
       selectedCategories: this.selectedCategories,
+      selectedEnergies: this.selectedEnergies,
+      selectedTransmissions: this.selectedTransmissions,
       selectedMonthlyPaiements: this.selectedMonthlyPaiements,
       
       searchMake: this.searchMake,
       searchModel: this.searchModel,
       searchCategory: this.searchCategory,
+      searchEnergy: this.searchEnergy,
+      searchTransimission: this.searchTransimission,
       searchMonthlyPaiements: this.searchMonthlyPaiements,
       
       listMakes: this.listMakes,
       listModels: this.listModels,
       listCategories: this.listCategories,
+      listEnergies: this.listEnergies,
+      listTransmissions: this.listTransmissions,
       listMonthlyPaiements: this.listMonthlyPaiements,
 
       currentPage : this.currentPage,
@@ -267,16 +230,22 @@ export class FilterUserService {
     this.selectedMakes = obj.selectedMakes,
     this.selectedModels = obj.selectedModels,
     this.selectedCategories = obj.selectedCategories,
+    this.selectedEnergies = obj.selectedEnergies,
+    this.selectedTransmissions = obj.selectedTransmissions,
     this.selectedMonthlyPaiements = obj.selectedMonthlyPaiements,
     
     this.searchMake = obj.searchMake,
     this.searchModel = obj.searchModel,
     this.searchCategory = obj.searchCategory,
+    this.searchEnergy = obj.searchEnergy,
+    this.searchTransimission = obj.searchTransimission,
     this.searchMonthlyPaiements = obj.searchMonthlyPaiements,
     
     this.listMakes = obj.listMakes,
     this.listModels = obj.listModels,
     this.listCategories = obj.listCategories,
+    this.listEnergies = obj.listEnergies,
+    this.listTransmissions = obj.listTransmissions,
     this.listMonthlyPaiements = obj.listMonthlyPaiements,
 
     this.currentPage = obj.currentPage,

@@ -46,25 +46,37 @@
             </li>
             <!-- Menu Catégories -->
             <li>
-                    <a href="#categorySubmenu" data-toggle="collapse" aria-expanded="false" 
-                                            class="dropdown-toggle">Catégorie</a>
-                    <ul class="collapse bkg" id="categorySubmenu">
-                        <li class="form-check"  *ngFor="let category of listCategories; let i = index">
-                                <input class="form-check-input " (change)="filterByCategory(category)" type="checkbox" id="categoryBox{{i}}">
-                                <label class="form-check-label " for="categoryBox{{i}}"> {{category}} </label>
-                        </li>
-                    </ul>
-                </li>
-            <!-- Menu Couleurs -->
-            <!-- <li >
-                <a href="#colorSubmenu" data-toggle="collapse" aria-expanded="false" 
-                                      class="dropdown-toggle">Couleur</a>
-                <ul class="collapse list-unstyled" id="colorSubmenu">
-                    <li *ngFor="let color of listVehicles?.aggs.colors.buckets">
-                        <a>{{color.key}}</a>
+                <a href="#categorySubmenu" data-toggle="collapse" aria-expanded="false" 
+                                        class="dropdown-toggle">Catégorie de véhicule</a>
+                <ul class="collapse bkg" id="categorySubmenu">
+                    <li class="form-check"  *ngFor="let category of listCategories; let i = index">
+                            <input class="form-check-input " (change)="filterByCategory(category)" type="checkbox" id="categoryBox{{i}}">
+                            <label class="form-check-label " for="categoryBox{{i}}"> {{category}} </label>
                     </li>
                 </ul>
-            </li> -->
+            </li>
+            <!-- Menu Carburants -->
+            <li >
+                <a href="#carburantSubmenu" data-toggle="collapse" aria-expanded="false" 
+                                      class="dropdown-toggle">Carburant</a>
+                <ul class="collapse bkg" id="carburantSubmenu">
+                    <li class="form-check" *ngFor="let carburant of listEnergies; let i = index">
+                        <input class="form-check-input " (change)="filterByEnergy(carburant)" type="checkbox" id="energyBox{{i}}">
+                        <label class="form-check-label " for="energyBox{{i}}"> {{carburant}} </label>
+                    </li>
+                </ul>
+            </li>
+            <!-- Menu Boîtes à vitesses -->
+            <li >
+                <a href="#transmissionSubmenu" data-toggle="collapse" aria-expanded="false" 
+                                        class="dropdown-toggle">Boîte de vitesse</a>
+                <ul class="collapse bkg" id="transmissionSubmenu">
+                    <li class="form-check" *ngFor="let transmission of listTransmissions; let i = index">
+                        <input class="form-check-input " (change)="filterByTransmission(transmission)" type="checkbox" id="transmissionBox{{i}}">
+                        <label class="form-check-label " for="transmissionBox{{i}}"> {{transmission}} </label>
+                    </li>
+                </ul>
+            </li>
             
         </ul>
     </nav>
@@ -92,11 +104,11 @@
                 <div class="row justify-content-center" ><br>
                 <ul class="nav nav-pills justify-content-center">
                     <li *ngIf="currentPage > 6" class="clickable page-link" (click)="goToPage(0)"> 1 </li>
-                    <li *ngIf="currentPage > 6" class="clickable page-link"> ........ </li>
+                    <li *ngIf="currentPage > 6" class="page-link"> ........ </li>
                     <li [ngClass]="{'active':currentPage==(i+1)}" class="clickable page-item" *ngFor="let page of pages; let i=index">
                         <a *ngIf="i > (currentPage-6) && i < (currentPage+4) " class="page-link" (click)="goToPage(i)">{{i+1}}</a>
                     </li>
-                    <li *ngIf="currentPage < totalPages - 5" class="clickable page-link"> ........ </li>
+                    <li *ngIf="currentPage < totalPages - 5" class="page-link"> ........ </li>
                     <li *ngIf="currentPage < totalPages - 5"class="clickable page-link" (click)="goToPage(totalPages-1)">{{totalPages}} </li>
                 </ul>
                 </div>

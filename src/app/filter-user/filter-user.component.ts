@@ -11,20 +11,26 @@ export class FilterUserComponent implements OnInit {
   query: string;
   nbrResults: any;
   listVehicles: any;
-
+  
   selectedMakes = [];
   selectedModels = [];
   selectedCategories = [];
+  selectedEnergies = [];
+  selectedTransmissions = [];
   selectedMonthlyPaiements = [];
   
   searchMake = "";
   searchModel = "";
   searchCategory = "";
+  searchEnergy = "";
+  searchTransimission = "";
   searchMonthlyPaiements = "";
   
   listMakes: any;
   listModels = [];
   listCategories: any;
+  listEnergies: any;
+  listTransmissions: any;
   listMonthlyPaiements: any;
 
   currentPage:number = 1;
@@ -40,7 +46,7 @@ export class FilterUserComponent implements OnInit {
 
   filterByMake(make){
     
-    let query = this.filterUserService.dynamicQuery(make,"","","");
+    let query = this.filterUserService.dynamicQuery(make,"","","","","");
     this.filterUserService.httpVehicles(query)
          .subscribe(data=>{
           let resJSON = JSON.parse(JSON.stringify(data));
@@ -84,13 +90,33 @@ export class FilterUserComponent implements OnInit {
       this.selectedCategories.push(category);
     }
     this.search();
-}
+  }
+
+  filterByEnergy(energy){
+    if(this.selectedEnergies.includes(energy)){
+      this.selectedEnergies.splice(this.selectedEnergies.indexOf(energy),1);
+    } else {
+      this.selectedEnergies.push(energy);
+    }
+    this.search();
+  }
+
+  filterByTransmission(transmission){
+    if(this.selectedTransmissions.includes(transmission)){
+      this.selectedTransmissions.splice(this.selectedTransmissions.indexOf(transmission),1);
+    } else {
+      this.selectedTransmissions.push(transmission);
+    }
+    this.search();
+  }
 
   search(){
     this.currentPage = 1;
     this.searchMake = "";
     this.searchModel = "";
     this.searchCategory = "";
+    this.searchEnergy = "";
+    this.searchTransimission = "";
     this.searchMonthlyPaiements = "";
 
       for(let m of this.selectedMakes){
@@ -102,8 +128,24 @@ export class FilterUserComponent implements OnInit {
       for(let m of this.selectedCategories){
         this.searchCategory += " " + m; 
       }
+      for(let m of this.selectedEnergies){
+        this.searchEnergy += " " + m; 
+      }
+      for(let m of this.selectedTransmissions){
+        this.searchTransimission += " " + m; 
+      }
       for(let m of this.selectedMonthlyPaiements){
         this.searchMonthlyPaiements += " " + m; 
+      }
+
+      if(this.selectedModels.length && !this.selectedCategories.length && !this.selectedMonthlyPaiements.length){
+        let query = this.filterUserService.dynamicQuery(this.searchMake,"","","","","");
+        this.filterUserService.httpVehicles(query)
+            .subscribe(data=>{
+              let resJSON = JSON.parse(JSON.stringify(data));
+              let listModels = this.filterUserService.getAggs(resJSON.aggs.models.buckets);
+              this.updateModels(listModels);
+            }); 
       }
     this.getVehicles();
   }
@@ -120,13 +162,15 @@ export class FilterUserComponent implements OnInit {
                             console.log("searchMake: "+this.searchMake);
                             console.log("searchModel: "+this.searchModel);
                             console.log("searchCategory: "+this.searchCategory);
+                            console.log("searchEnergy: "+this.searchEnergy);
+                            console.log("searchTansmission: "+this.searchTransimission);
                             console.log("searchMonthlyPaiements: "+this.searchMonthlyPaiements);
                           });
   }
 
   setQuery(){
     this.filterUserService.setArgs(this.getArgs());
-    this.query =  this.filterUserService.dynamicQuery(this.searchMake, this.searchModel, this.searchMonthlyPaiements, this.searchCategory);     
+    this.query =  this.filterUserService.dynamicQuery(this.searchMake, this.searchModel, this.searchMonthlyPaiements, this.searchCategory, this.searchEnergy, this.searchTransimission);     
   }
 
   cleanModels(listModels){
@@ -168,16 +212,22 @@ export class FilterUserComponent implements OnInit {
     this.selectedMakes = obj.selectedMakes,
     this.selectedModels = obj.selectedModels,
     this.selectedCategories = obj.selectedCategories,
+    this.selectedEnergies = obj.selectedEnergies,
+    this.selectedTransmissions = obj.selectedTransmissions,
     this.selectedMonthlyPaiements = obj.selectedMonthlyPaiements,
     
     this.searchMake = obj.searchMake,
     this.searchModel = obj.searchModel,
     this.searchCategory = obj.searchCategory,
+    this.searchEnergy = obj.searchEnergy,
+    this.searchTransimission = obj.searchTransimission,
     this.searchMonthlyPaiements = obj.searchMonthlyPaiements,
     
     this.listMakes = obj.listMakes,
     this.listModels = obj.listModels,
     this.listCategories = obj.listCategories,
+    this.listEnergies = obj.listEnergies,
+    this.listTransmissions = obj.listTransmissions,
     this.listMonthlyPaiements = obj.listMonthlyPaiements,
 
     this.currentPage = obj.currentPage,
@@ -194,16 +244,22 @@ export class FilterUserComponent implements OnInit {
       selectedMakes: this.selectedMakes,
       selectedModels: this.selectedModels,
       selectedCategories: this.selectedCategories,
+      selectedEnergies: this.selectedEnergies,
+      selectedTransmissions: this.selectedTransmissions,
       selectedMonthlyPaiements: this.selectedMonthlyPaiements,
       
       searchMake: this.searchMake,
       searchModel: this.searchModel,
       searchCategory: this.searchCategory,
+      searchEnergy: this.searchEnergy,
+      searchTransimission: this.searchTransimission,
       searchMonthlyPaiements: this.searchMonthlyPaiements,
       
       listMakes: this.listMakes,
       listModels: this.listModels,
       listCategories: this.listCategories,
+      listEnergies: this.listEnergies,
+      listTransmissions: this.listTransmissions,
       listMonthlyPaiements: this.listMonthlyPaiements,
 
       currentPage : this.currentPage,
